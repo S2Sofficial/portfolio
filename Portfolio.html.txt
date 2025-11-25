@@ -1,0 +1,1109 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swaroop Kumar Yadav | Engineer & Creator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Optimize Font Loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Updated FontAwesome to 6.5.1 CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        'accent': 'var(--accent-color)',
+                        'dark-bg': '#050505',
+                        'light-bg': '#f8fafc',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+
+    <style>
+        :root {
+            /* Default Dark Mode Variables */
+            --bg-color: #050505;
+            --text-main: #ffffff;
+            --text-secondary: #d1d5db;
+            --text-muted: #9ca3af;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-shadow: rgba(0, 0, 0, 0.1);
+            --accent-color: #4CC9F0;
+            --accent-soft: rgba(76, 201, 240, 0.1); /* Calculated in JS */
+        }
+
+
+        body.light-mode {
+            /* Light Mode Variables */
+            --bg-color: #f0f4f8;
+            --text-main: #111827;
+            --text-secondary: #4b5563;
+            --text-muted: #6b7280;
+            --glass-bg: rgba(255, 255, 255, 0.6);
+            --glass-border: rgba(209, 213, 219, 0.6);
+            --glass-shadow: rgba(0, 0, 0, 0.05);
+        }
+
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            transition: background-color 0.5s ease, color 0.5s ease;
+            overflow-x: hidden;
+        }
+        
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.6;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+
+        /* Preloader */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease-out, visibility 0.8s;
+        }
+
+
+        #binary-counter {
+            font-family: 'Space Grotesk', monospace;
+            font-size: 15vw;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.05em;
+        }
+
+
+        /* Enhanced Glass Panel */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 30px var(--glass-shadow);
+            transition: all 0.3s ease;
+        }
+
+
+        .glass-panel:hover {
+            border-color: var(--accent-color);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+
+        .text-gradient {
+            background: linear-gradient(to right, var(--text-main), var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+
+        .hover-lift {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .hover-lift:hover {
+            transform: translateY(-5px);
+        }
+
+
+        /* Micro-interaction: Skill Tag */
+        .skill-tag {
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+        .skill-tag:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+            background: var(--accent-soft); 
+            box-shadow: 0 0 10px var(--glass-shadow);
+        }
+
+
+        /* Project Card Icon Animation */
+        .group:hover .card-icon {
+            transform: scale(1.1) rotate(5deg);
+            color: var(--accent-color);
+        }
+        .card-icon {
+            transition: all 0.5s ease;
+            color: var(--text-muted);
+        }
+
+
+        /* Scroll Margin */
+        section, header {
+            scroll-margin-top: 100px;
+        }
+
+
+        /* Focus States */
+        a:focus-visible, button:focus-visible {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 4px;
+        }
+
+
+        /* Mobile Menu */
+        #mobile-menu {
+            transition: transform 0.3s ease-in-out;
+            background-color: var(--bg-color);
+        }
+        .menu-open {
+            overflow: hidden;
+        }
+
+
+        /* --- SETTINGS PANEL STYLES --- */
+        #settings-container {
+            position: fixed;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            display: flex;
+            align-items: flex-start;
+            transition: transform 0.3s ease;
+        }
+
+
+        #settings-toggle {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-right: none;
+            padding: 12px;
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            color: var(--text-main);
+            box-shadow: -4px 4px 10px rgba(0,0,0,0.1);
+        }
+
+
+        #settings-panel {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 20px;
+            border-bottom-left-radius: 12px;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 4px 30px rgba(0,0,0,0.1);
+            width: 260px;
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            gap: 16px;
+        }
+
+
+        #settings-container.open #settings-panel {
+            display: flex;
+        }
+
+
+        #settings-container.open {
+            transform: translateY(-50%) translateX(0);
+        }
+        
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+
+        .color-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .color-btn:hover { transform: scale(1.2); }
+        .color-btn.active { border-color: var(--text-main); transform: scale(1.1); }
+
+
+        .shape-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .shape-btn:hover, .shape-btn.active {
+            background: var(--accent-color);
+            color: #000;
+            border-color: var(--accent-color);
+        }
+
+
+        input[type="color"] {
+            -webkit-appearance: none;
+            border: none;
+            width: 100%;
+            height: 32px;
+            cursor: pointer;
+            background: none;
+        }
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0; 
+        }
+        input[type="color"]::-webkit-color-swatch {
+            border: 1px solid var(--glass-border);
+            border-radius: 4px;
+        }
+
+
+        /* Text Utilities */
+        .text-dynamic-main { color: var(--text-main); }
+        .text-dynamic-sec { color: var(--text-secondary); }
+        .text-dynamic-muted { color: var(--text-muted); }
+        .text-accent { color: var(--accent-color); }
+        .bg-accent { background-color: var(--accent-color); }
+        .border-accent { border-color: var(--accent-color); }
+        .hover-text-accent:hover { color: var(--accent-color); }
+        .hover-bg-accent:hover { background-color: var(--accent-color); }
+        
+        /* Soft Accent Background */
+        .bg-accent-soft { background-color: var(--accent-soft); }
+    </style>
+</head>
+<body class="antialiased selection:bg-accent selection:text-white relative">
+
+
+    <!-- Preloader -->
+    <div id="preloader" aria-hidden="false">
+        <div id="binary-counter">0000</div>
+    </div>
+
+
+    <!-- 3D Background -->
+    <div id="canvas-container"></div>
+
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="fixed bottom-6 right-6 z-40 bg-accent text-white p-4 rounded-full shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 hover:scale-110 focus:outline-none" aria-label="Back to top">
+        <i class="fas fa-arrow-up text-xl"></i>
+    </button>
+
+
+    <!-- Settings Container (Collapsible) -->
+    <div id="settings-container">
+        <button id="settings-toggle" aria-label="Open Settings">
+            <i class="fas fa-cog fa-spin-pulse" style="--fa-animation-duration: 3s;"></i>
+        </button>
+        <div id="settings-panel">
+            <!-- Theme -->
+            <div class="flex justify-between items-center">
+                <span class="text-sm font-bold text-dynamic-main">Appearance</span>
+                <button id="theme-btn" class="text-dynamic-main hover:text-accent transition-colors">
+                    <i class="fas fa-sun"></i>
+                </button>
+            </div>
+            <div class="h-px bg-gray-500/20 w-full"></div>
+            
+            <!-- Colors -->
+            <div>
+                <span class="text-xs text-dynamic-muted uppercase tracking-widest mb-2 block">Accent Color</span>
+                <div class="color-grid mb-2">
+                    <button class="color-btn active" style="background-color: #4CC9F0;" data-color="#4CC9F0" aria-label="Sky Blue"></button>
+                    <button class="color-btn" style="background-color: #F72585;" data-color="#F72585" aria-label="Cyber Pink"></button>
+                    <button class="color-btn" style="background-color: #4361EE;" data-color="#4361EE" aria-label="Ultramarine"></button>
+                    <button class="color-btn" style="background-color: #F48C06;" data-color="#F48C06" aria-label="Solar Orange"></button>
+                    <button class="color-btn" style="background-color: #10B981;" data-color="#10B981" aria-label="Emerald"></button>
+                </div>
+                <div class="flex items-center gap-2 mt-2">
+                    <span class="text-xs text-dynamic-sec">Custom:</span>
+                    <input type="color" id="custom-color-picker" value="#4CC9F0">
+                </div>
+            </div>
+
+
+            <div class="h-px bg-gray-500/20 w-full"></div>
+
+
+            <!-- Geometry -->
+            <div>
+                <span class="text-xs text-dynamic-muted uppercase tracking-widest mb-2 block">Background FX</span>
+                <div class="grid grid-cols-2 gap-2">
+                    <button class="shape-btn active" data-shape="network">Network</button>
+                    <button class="shape-btn" data-shape="flux">Flux</button>
+                    <button class="shape-btn" data-shape="matrix">Matrix</button>
+                    <button class="shape-btn" data-shape="orbit">Orbit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 px-6 py-4 glass-panel border-b-0 border-x-0 border-t-0">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="#" class="text-xl font-display font-bold tracking-tighter z-50 relative text-dynamic-main">SKY.</a>
+            
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex space-x-8 text-sm font-medium text-dynamic-sec">
+                <a href="#about" class="hover-text-accent transition-colors">About</a>
+                <a href="#experience" class="hover-text-accent transition-colors">Experience</a>
+                <a href="#projects" class="hover-text-accent transition-colors">Projects</a>
+                <a href="#creative" class="hover-text-accent transition-colors">Creative</a>
+            </div>
+            
+            <div class="hidden md:block">
+                <a href="#contact" class="px-5 py-2 bg-dynamic-main text-dynamic-inverse text-sm font-bold rounded-full bg-white text-black hover-bg-accent transition-colors focus:ring-2 focus:ring-accent hover:text-white">
+                    Let's Talk
+                </a>
+            </div>
+
+
+            <!-- Mobile Hamburger -->
+            <button id="menu-btn" class="md:hidden z-50 text-dynamic-main focus:outline-none" aria-label="Toggle menu">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu" class="fixed inset-0 z-40 flex flex-col justify-center items-center transform translate-x-full md:hidden">
+            <div class="flex flex-col space-y-8 text-center">
+                <a href="#about" class="mobile-link text-3xl font-display font-bold text-dynamic-main hover-text-accent transition-colors">About</a>
+                <a href="#experience" class="mobile-link text-3xl font-display font-bold text-dynamic-main hover-text-accent transition-colors">Experience</a>
+                <a href="#projects" class="mobile-link text-3xl font-display font-bold text-dynamic-main hover-text-accent transition-colors">Projects</a>
+                <a href="#creative" class="mobile-link text-3xl font-display font-bold text-dynamic-main hover-text-accent transition-colors">Creative</a>
+                <a href="#contact" class="mobile-link text-3xl font-display font-bold text-accent">Let's Talk</a>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- Hero Section -->
+    <header id="about" class="min-h-[100dvh] flex items-center justify-center relative px-6 py-20">
+        <div class="max-w-7xl w-full pt-10">
+            <p class="text-accent font-display tracking-widest mb-4 animate-pulse font-bold text-sm md:text-base">ELECTRONICS ENGINEER & CREATOR</p>
+            <h1 class="text-5xl md:text-8xl lg:text-9xl font-display font-bold leading-tight mb-8 text-dynamic-main">
+                SWAROOP<br>
+                <span class="text-dynamic-muted">KUMAR</span> YADAV
+            </h1>
+            <p class="text-lg md:text-2xl text-dynamic-sec max-w-2xl font-light leading-relaxed mb-10">
+                Bridging the gap between <span class="text-dynamic-main font-normal">hardware logic</span> and <span class="text-dynamic-main font-normal">visual emotion</span>. 
+                Expert in FPGA & Embedded Systems, specializing in blending data processing with human-centric design.
+            </p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl">
+                <div class="glass-panel p-5 rounded-lg flex items-center gap-4 hover-lift">
+                    <!-- Fixed: Used bg-accent-soft -->
+                    <div class="bg-accent-soft p-3 rounded-full text-accent shrink-0">
+                        <i class="fas fa-university text-2xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-dynamic-main text-lg">B.Tech ECE (2022-26)</h4>
+                        <p class="text-sm text-dynamic-muted">HNBGU, Uttarakhand • CGPA: 7.69</p>
+                    </div>
+                </div>
+                <div class="glass-panel p-5 rounded-lg flex items-center gap-4 hover-lift">
+                    <!-- Fixed: Replaced hardcoded purple with accent classes -->
+                    <div class="bg-accent-soft p-3 rounded-full text-accent shrink-0">
+                        <i class="fas fa-scroll text-2xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-dynamic-main text-lg">IEEE Published Author</h4>
+                        <p class="text-sm text-dynamic-muted">IC2E3 Conference 2025</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 md:hidden">
+                <a href="#contact" class="block w-full text-center py-3 bg-white text-black font-bold rounded-full hover-bg-accent transition-colors">
+                    Let's Talk
+                </a>
+            </div>
+        </div>
+        
+        <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 animate-bounce text-dynamic-muted hidden md:block">
+            <i class="fas fa-arrow-down"></i>
+        </div>
+    </header>
+
+
+    <!-- Experience -->
+    <section id="experience" class="py-20 md:py-24 px-6 border-t border-white/5">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-display font-bold mb-12 text-gradient">Experience</h2>
+            <div class="relative pl-4 md:pl-8 border-l border-gray-500/20 space-y-12">
+                <div class="relative">
+                    <div class="absolute -left-[23px] md:-left-[39px] top-0 bg-accent h-4 w-4 md:h-5 md:w-5 rounded-full border-4 border-gray-900 box-content"></div>
+                    <div class="glass-panel p-6 md:p-8 rounded-xl hover:border-accent/30 transition-colors">
+                        <div class="flex flex-col md:flex-row justify-between mb-4 gap-2">
+                            <div>
+                                <h3 class="text-xl md:text-2xl font-bold text-dynamic-main">Telecom Regulatory Authority of India (TRAI)</h3>
+                                <p class="text-accent font-medium text-base md:text-lg">Intern • NSL-I Division</p>
+                            </div>
+                            <span class="text-dynamic-muted text-sm shrink-0">June 2025 - July 2025</span>
+                        </div>
+                        <ul class="list-disc list-inside text-dynamic-sec space-y-2 text-sm md:text-base">
+                            <li>Contributed research to TRAI Consultation Paper No. 11/2025 on interconnection regulation.</li>
+                            <li>Analyzed spectrum management, licensing policies, and Satellite-5G integration.</li>
+                            <li>Documented references to 3GPP standards and NTN architectures.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Skills -->
+    <section class="py-20 md:py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+                <div>
+                    <h2 class="text-4xl md:text-5xl font-display font-bold mb-8 text-dynamic-main">Technical Arsenal</h2>
+                    <div class="space-y-8">
+                        <div>
+                            <h3 class="text-sm uppercase tracking-widest text-dynamic-muted mb-4 font-semibold">Languages</h3>
+                            <div class="flex flex-wrap gap-3">
+                                <span class="skill-tag px-4 py-2 rounded-full text-sm">VHDL</span>
+                                <span class="skill-tag px-4 py-2 rounded-full text-sm">Embedded C</span>
+                                <span class="skill-tag px-4 py-2 rounded-full text-sm">Python</span>
+                                <span class="skill-tag px-4 py-2 rounded-full text-sm">MATLAB</span>
+                                <span class="skill-tag px-4 py-2 rounded-full text-sm">HTML+CSS</span>
+                                <span class="skill-tag px-4 py-2 rounded-full text-sm">Assembly</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-sm uppercase tracking-widest text-dynamic-muted mb-4 font-semibold">Design Tools</h3>
+                            <div class="flex flex-wrap gap-3">
+                                <span class="skill-tag px-4 py-2 rounded-full text-sm">Xilinx Vivado</span>
+                                <span class="skill-tag px-4 py-2 rounded-full text-sm">Altera Quartus</span>
+                                <span class="skill-tag px-4 py-2 rounded-full text-sm">Cadence Virtuoso</span>
+                                <span class="skill-tag px-4 py-2 rounded-full text-sm">LTspice</span>
+                                <span class="skill-tag px-4 py-2 rounded-full text-sm">Proteus</span>
+                                <span class="skill-tag px-4 py-2 rounded-full text-sm">CCS Studio</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-8 glass-panel rounded-2xl border border-gray-500/20 flex flex-col justify-center">
+                    <div class="flex items-center gap-4 mb-6">
+                        <i class="fas fa-book-journal-whills text-3xl text-accent"></i>
+                        <h3 class="text-2xl font-bold text-dynamic-main">Research Publication</h3>
+                    </div>
+                    <h4 class="text-xl font-bold mb-3 text-dynamic-main">Adaptive Traffic Signal Control System</h4>
+                    <p class="text-sm text-dynamic-muted mb-6">Based on Ultrasonic Sensors using Kalman Filter</p>
+                    <div class="text-dynamic-sec space-y-4 text-sm leading-relaxed">
+                        <p>Published in <strong>2025 IEEE International Conference (IC2E3)</strong>.</p>
+                        <p>Designed a solution to optimize urban traffic flow using real-time data processing and sensor fusion. The system adapts signal timing dynamically based on traffic density.</p>
+                        <div class="inline-block px-3 py-1 border border-gray-500/20 rounded text-xs mt-2 text-accent">DOI: 10.1109/IC2E365635.2025.11167485</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Projects -->
+    <section id="projects" class="py-20 md:py-24 px-6 relative">
+        <div class="absolute inset-0 bg-gray-500/5 -z-10"></div>
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl md:text-6xl font-display font-bold mb-16 text-dynamic-main">Selected Works</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- P1 -->
+                <a href="#" class="block glass-panel p-8 rounded-2xl hover-lift group relative overflow-hidden focus:ring-2 focus:ring-accent">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="fas fa-microchip text-9xl card-icon"></i>
+                    </div>
+                    <div class="relative z-10 flex flex-col h-full">
+                        <span class="text-accent text-xs font-bold tracking-wider mb-1">FPGA / VHDL</span>
+                        <h3 class="text-2xl font-bold mt-2 mb-4 text-dynamic-main">8-bit RISC CPU Design</h3>
+                        <p class="text-dynamic-sec text-sm mb-6 flex-grow">
+                            Developed partial architecture for a RISC processor including ALU, Control Unit, and PC modules. Simulated in Vivado.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mt-auto">
+                            <span class="text-[10px] uppercase bg-gray-500/10 px-2 py-1 rounded text-dynamic-muted">Vivado</span>
+                            <span class="text-[10px] uppercase bg-gray-500/10 px-2 py-1 rounded text-dynamic-muted">Nexys A7</span>
+                        </div>
+                    </div>
+                </a>
+
+
+                <!-- P2 -->
+                <a href="https://s2sofficial.github.io/vhdl" target="_blank" class="block glass-panel p-8 rounded-2xl hover-lift group relative overflow-hidden focus:ring-2 focus:ring-accent">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="fas fa-layer-group text-9xl card-icon"></i>
+                    </div>
+                    <div class="relative z-10 flex flex-col h-full">
+                        <span class="text-accent text-xs font-bold tracking-wider mb-1">IP CORE DEV</span>
+                        <h3 class="text-2xl font-bold mt-2 mb-4 text-dynamic-main">Digital Logic Library <i class="fas fa-external-link-alt text-sm ml-2 opacity-50"></i></h3>
+                        <p class="text-dynamic-sec text-sm mb-6 flex-grow">
+                            Created modular IP cores: 24Hr Clock, FSM Detectors, and VGA/LCD interfaces. Verified on Cyclone IV & Nexys A7.
+                        </p>
+                    </div>
+                </a>
+
+
+                <!-- P3 -->
+                <a href="#" class="block glass-panel p-8 rounded-2xl hover-lift group relative overflow-hidden focus:ring-2 focus:ring-accent">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="fas fa-server text-9xl card-icon"></i>
+                    </div>
+                    <div class="relative z-10 flex flex-col h-full">
+                        <span class="text-accent text-xs font-bold tracking-wider mb-1">MICROCONTROLLER</span>
+                        <h3 class="text-2xl font-bold mt-2 mb-4 text-dynamic-main">8051 Peripheral Interface</h3>
+                        <p class="text-dynamic-sec text-sm mb-6 flex-grow">
+                            Simulated complex interfacing (ADC, RTC, UART, SPI, CAN) using Assembly language and Proteus.
+                        </p>
+                    </div>
+                </a>
+
+
+                <!-- P4 -->
+                <a href="#" class="block glass-panel p-8 rounded-2xl hover-lift group relative overflow-hidden focus:ring-2 focus:ring-accent">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="fas fa-id-card text-9xl card-icon"></i>
+                    </div>
+                    <div class="relative z-10 flex flex-col h-full">
+                        <span class="text-accent text-xs font-bold tracking-wider mb-1">EMBEDDED SYSTEMS</span>
+                        <h3 class="text-2xl font-bold mt-2 mb-4 text-dynamic-main">RFID Access Control</h3>
+                        <p class="text-dynamic-sec text-sm mb-6 flex-grow">
+                            Secure access system using Arduino UNO and RFID. Implemented UART comms on MSP430.
+                        </p>
+                    </div>
+                </a>
+
+
+                <!-- P5 -->
+                <a href="#" class="block glass-panel p-8 rounded-2xl hover-lift group relative overflow-hidden focus:ring-2 focus:ring-accent">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="fas fa-traffic-light text-9xl card-icon"></i>
+                    </div>
+                    <div class="relative z-10 flex flex-col h-full">
+                        <span class="text-accent text-xs font-bold tracking-wider mb-1">IEEE PAPER</span>
+                        <h3 class="text-2xl font-bold mt-2 mb-4 text-dynamic-main">Adaptive Traffic Control</h3>
+                        <p class="text-dynamic-sec text-sm mb-6 flex-grow">
+                            Intelligent signaling system based on traffic density. Presented at IC2E3 2025.
+                        </p>
+                    </div>
+                </a>
+
+
+                <!-- P6 -->
+                <a href="#" class="block glass-panel p-8 rounded-2xl hover-lift group relative overflow-hidden focus:ring-2 focus:ring-accent">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="fas fa-wave-square text-9xl card-icon"></i>
+                    </div>
+                    <div class="relative z-10 flex flex-col h-full">
+                        <span class="text-accent text-xs font-bold tracking-wider mb-1">INTERFACING</span>
+                        <h3 class="text-2xl font-bold mt-2 mb-4 text-dynamic-main">VGA Monitor Driver</h3>
+                        <p class="text-dynamic-sec text-sm mb-6 flex-grow">
+                            Direct FPGA-to-VGA interface generating sync signals and RGB mapping for visual output.
+                        </p>
+                    </div>
+                </a>
+
+
+            </div>
+        </div>
+    </section>
+
+
+<!-- Creative Studio -->
+    <section id="creative" class="py-20 md:py-24 px-6 relative overflow-hidden">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gray-100 opacity-5 rounded-full blur-[100px] pointer-events-none mix-blend-overlay"></div>
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16">
+                <div>
+                    <h2 class="text-4xl md:text-6xl font-display font-bold text-dynamic-main">The Creative Studio</h2>
+                    <p class="text-dynamic-sec mt-4 max-w-md">
+                        Beyond the logic gates lies the observer. I capture raw human emotions through street photography and translate ideas into visuals through design.
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-4 mt-8 md:mt-0">
+                    <div class="px-6 py-3 border border-gray-500/20 rounded-full flex items-center gap-2 text-dynamic-main">
+                        <i class="fas fa-camera"></i> Street Photography
+                    </div>
+                    <div class="px-6 py-3 border border-gray-500/20 rounded-full flex items-center gap-2 text-dynamic-main">
+                        <i class="fas fa-pen-nib"></i> Graphic Design
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Photography Card -->
+                <div class="glass-panel p-1 rounded-3xl min-h-[320px] h-auto md:h-[500px] relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent z-10"></div>
+                    <div class="w-full h-full bg-neutral-800 flex items-center justify-center text-gray-700 group-hover:scale-105 transition-transform duration-700 aspect-video md:aspect-auto">
+                        <i class="fas fa-camera-retro text-6xl text-white"></i>
+                    </div>
+                    <div class="absolute bottom-8 left-8 z-20">
+                        <h3 class="text-2xl md:text-3xl font-display font-bold mb-2 text-white">Street & Nature</h3>
+                        <p class="text-gray-300 max-w-sm text-sm md:text-base">Capturing the unscripted chaos of the streets, the calm of nature, and the depth of human emotion.</p>
+                    </div>
+                </div>
+
+
+                <!-- Design Card -->
+                <div class="glass-panel p-1 rounded-3xl min-h-[320px] h-auto md:h-[500px] relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent z-10"></div>
+                    <div class="w-full h-full bg-neutral-800 flex items-center justify-center text-gray-700 group-hover:scale-105 transition-transform duration-700 aspect-video md:aspect-auto">
+                        <i class="fas fa-palette text-6xl text-white"></i>
+                    </div>
+                    <div class="absolute bottom-8 left-8 z-20">
+                        <h3 class="text-2xl md:text-3xl font-display font-bold mb-2 text-white">Visual Identity</h3>
+                        <p class="text-gray-300 max-w-sm text-sm md:text-base">Logos, Posters, and UI. <br>Tools: Canva, Illustrator, Photoshop.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Footer -->
+    <footer id="contact" class="border-t border-gray-800 py-16 px-6 bg-black">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="text-center md:text-left">
+                <h2 class="text-3xl font-display font-bold mb-2 text-white">Swaroop Kumar Yadav</h2>
+                <div class="flex items-center justify-center md:justify-start gap-2 text-gray-300 mb-6">
+                    <i class="fas fa-envelope text-accent"></i>
+                    <a href="mailto:swaroop.k.yadav@gmail.com" class="hover:text-white transition-colors">swaroop.k.yadav@gmail.com</a>
+                </div>
+                <div class="flex space-x-6 justify-center md:justify-start">
+                    <a href="https://www.linkedin.com/in/Swaroop2sky" target="_blank" rel="noopener noreferrer" class="text-2xl text-gray-400 hover:text-white transition-colors"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://github.com/S2Sofficial" target="_blank" rel="noopener noreferrer" class="text-2xl text-gray-400 hover:text-white transition-colors"><i class="fab fa-github"></i></a>
+                    <a href="https://x.com/S2SmeX" target="_blank" rel="noopener noreferrer" class="text-2xl text-gray-400 hover:text-white transition-colors"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="https://www.behance.net/s2sme" target="_blank" rel="noopener noreferrer" class="text-2xl text-gray-400 hover:text-white transition-colors"><i class="fab fa-behance"></i></a>
+                    <a href="https://instagram.com/swaroop2sky" target="_blank" rel="noopener noreferrer" class="text-2xl text-gray-400 hover:text-white transition-colors"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            
+            <div class="text-center md:text-right">
+                <p class="text-gray-400 mb-4">Open for collaboration on Embedded Systems & Design.</p>
+                <a href="mailto:swaroop.k.yadav@gmail.com" class="text-2xl md:text-4xl font-bold border-b-2 border-accent hover:text-accent transition-colors text-white">
+                    Get in touch
+                </a>
+            </div>
+        </div>
+        <div class="text-center mt-12 text-xs text-gray-500">
+            &copy; 2025 Swaroop Kumar Yadav. All rights reserved.
+        </div>
+    </footer>
+
+
+    <!-- Scripts -->
+    <script>
+        // --- SETTINGS LOGIC ---
+        const root = document.documentElement;
+        const themeBtn = document.getElementById('theme-btn');
+        const settingsToggle = document.getElementById('settings-toggle');
+        const settingsContainer = document.getElementById('settings-container');
+        const colorBtns = document.querySelectorAll('.color-btn');
+        const customColorPicker = document.getElementById('custom-color-picker');
+        const shapeBtns = document.querySelectorAll('.shape-btn');
+        
+        let currentAccent = '#4CC9F0';
+        let currentShape = 'network';
+        let isLightMode = false;
+
+
+        // Toggle Settings Panel
+        settingsToggle.addEventListener('click', () => {
+            settingsContainer.classList.toggle('open');
+        });
+
+
+        // Close settings when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!settingsContainer.contains(e.target)) {
+                settingsContainer.classList.remove('open');
+            }
+        });
+
+
+        // --- PERSISTENCE ---
+        function saveSettings() {
+            localStorage.setItem('sky_portfolio_theme', isLightMode ? 'light' : 'dark');
+            localStorage.setItem('sky_portfolio_accent', currentAccent);
+            localStorage.setItem('sky_portfolio_shape', currentShape);
+        }
+
+
+        function loadSettings() {
+            const savedTheme = localStorage.getItem('sky_portfolio_theme');
+            const savedAccent = localStorage.getItem('sky_portfolio_accent');
+            const savedShape = localStorage.getItem('sky_portfolio_shape');
+
+
+            if (savedTheme === 'light') {
+                isLightMode = true;
+                document.body.classList.add('light-mode');
+                themeBtn.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+
+
+            if (savedAccent) {
+                setAccent(savedAccent, false); // False = don't double save
+            }
+
+
+            if (savedShape) {
+                currentShape = savedShape;
+                shapeBtns.forEach(b => {
+                    b.classList.remove('active');
+                    if(b.getAttribute('data-shape') === currentShape) b.classList.add('active');
+                });
+                // Note: three.js init will read currentShape
+            }
+        }
+
+
+        // Theme Toggling
+        themeBtn.addEventListener('click', () => {
+            isLightMode = !isLightMode;
+            document.body.classList.toggle('light-mode');
+            themeBtn.innerHTML = isLightMode ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+            updateThreeColors();
+            saveSettings();
+        });
+
+
+        // Preset Colors
+        colorBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                colorBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const color = btn.getAttribute('data-color');
+                setAccent(color);
+            });
+        });
+
+
+        // Custom Color
+        customColorPicker.addEventListener('input', (e) => {
+            colorBtns.forEach(b => b.classList.remove('active'));
+            setAccent(e.target.value);
+        });
+
+
+        function hexToRgb(hex) {
+            // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+            var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+            hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+                return r + r + g + g + b + b;
+            });
+            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+
+        function setAccent(color, save = true) {
+            currentAccent = color;
+            root.style.setProperty('--accent-color', color);
+            
+            // Calculate Soft Accent
+            const rgb = hexToRgb(color);
+            if(rgb) {
+                const softColor = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.1)`;
+                root.style.setProperty('--accent-soft', softColor);
+            }
+
+
+            // Update Picker UI if loaded from storage
+            customColorPicker.value = color;
+            
+            updateThreeColors();
+            if(save) saveSettings();
+        }
+
+
+        // Geometry Switching
+        shapeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                shapeBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const shape = btn.getAttribute('data-shape');
+                currentShape = shape;
+                switchGeometry(shape);
+                saveSettings();
+            });
+        });
+
+
+        // --- BINARY PRELOADER ---
+        const counterElement = document.getElementById('binary-counter');
+        const preloader = document.getElementById('preloader');
+        const binaries = ['0000', '0001', '0010', '0011', '0100', '0101', '0110', '0111', '1000', '1001', '1010', '1011', '1100', '1101', '1110', '1111'];
+        let currentIndex = 0;
+
+
+        function updateCounter() {
+            if (currentIndex < binaries.length) {
+                counterElement.innerText = binaries[currentIndex];
+                currentIndex++;
+                setTimeout(updateCounter, 100); 
+            } else {
+                setTimeout(() => {
+                    preloader.style.opacity = '0';
+                    preloader.style.visibility = 'hidden';
+                    preloader.setAttribute('aria-hidden', 'true');
+                }, 500);
+            }
+        }
+        window.addEventListener('load', () => {
+            updateCounter();
+            loadSettings(); // Load settings on start
+        });
+
+
+        // --- NAVIGATION ---
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+        let isMenuOpen = false;
+
+
+        menuBtn.addEventListener('click', () => {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                mobileMenu.classList.remove('translate-x-full');
+                menuBtn.innerHTML = '<i class="fas fa-times text-2xl"></i>';
+                document.body.classList.add('menu-open');
+            } else {
+                mobileMenu.classList.add('translate-x-full');
+                menuBtn.innerHTML = '<i class="fas fa-bars text-2xl"></i>';
+                document.body.classList.remove('menu-open');
+            }
+        });
+
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                isMenuOpen = false;
+                mobileMenu.classList.add('translate-x-full');
+                menuBtn.innerHTML = '<i class="fas fa-bars text-2xl"></i>';
+                document.body.classList.remove('menu-open');
+            });
+        });
+
+
+        // Back to Top
+        const backToTopBtn = document.getElementById('back-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 600) {
+                backToTopBtn.classList.remove('opacity-0', 'translate-y-20');
+            } else {
+                backToTopBtn.classList.add('opacity-0', 'translate-y-20');
+            }
+        });
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+
+        // --- THREE.JS BACKGROUND ---
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x050505, 0.002);
+
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+
+        const isMobile = window.innerWidth < 768;
+        const count = isMobile ? 150 : 300; 
+        
+        // Particles (Static for now)
+        const pGeo = new THREE.BufferGeometry();
+        const positions = new Float32Array(count * 3);
+        const pColors = new Float32Array(count * 3); 
+
+
+        for(let i = 0; i < count * 3; i++) {
+            positions[i] = (Math.random() - 0.5) * 40; 
+            pColors[i] = 1; 
+        }
+
+
+        pGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        pGeo.setAttribute('color', new THREE.BufferAttribute(pColors, 3));
+
+
+        const particleMaterial = new THREE.PointsMaterial({
+            size: 0.15,
+            color: new THREE.Color(0xffffff),
+            transparent: true,
+            opacity: 0.8
+        });
+
+
+        const particles = new THREE.Points(pGeo, particleMaterial);
+        scene.add(particles);
+
+
+        // Dynamic Geometry Mesh
+        let activeMesh = null;
+        let lineMaterial = new THREE.LineBasicMaterial({
+            color: new THREE.Color(currentAccent),
+            transparent: true,
+            opacity: 0.15
+        });
+
+
+        function switchGeometry(shape) {
+            if (activeMesh) {
+                scene.remove(activeMesh);
+                activeMesh.geometry.dispose();
+            }
+
+
+            let geo;
+            switch(shape) {
+                case 'network':
+                    geo = new THREE.IcosahedronGeometry(10, 2);
+                    break;
+                case 'flux':
+                    geo = new THREE.TorusKnotGeometry(8, 2, 100, 16);
+                    break;
+                case 'matrix':
+                    geo = new THREE.BoxGeometry(15, 15, 15, 8, 8, 8);
+                    break;
+                case 'orbit':
+                    geo = new THREE.SphereGeometry(10, 32, 32);
+                    break;
+                default:
+                    geo = new THREE.IcosahedronGeometry(10, 2);
+            }
+
+
+            const wireframe = new THREE.WireframeGeometry(geo);
+            activeMesh = new THREE.LineSegments(wireframe, lineMaterial);
+            activeMesh.rotation.z = 0.5;
+            scene.add(activeMesh);
+        }
+
+
+        // Init geometry
+        // Note: loadSettings() handles initial shape now, but we need a default if nothing saved
+        setTimeout(() => {
+             if (!activeMesh) switchGeometry(currentShape);
+        }, 100);
+
+
+        camera.position.z = 15;
+
+
+        function updateThreeColors() {
+            lineMaterial.color.set(currentAccent);
+            
+            if (isLightMode) {
+                scene.fog.color.set(0xf0f4f8);
+                particleMaterial.color.set(0x333333);
+                lineMaterial.opacity = 0.3;
+            } else {
+                scene.fog.color.set(0x050505);
+                particleMaterial.color.set(0xffffff);
+                lineMaterial.opacity = 0.15;
+            }
+        }
+
+
+        let mouseX = 0;
+        let mouseY = 0;
+        let animationId;
+
+
+        document.addEventListener('mousemove', (event) => {
+            mouseX = event.clientX - window.innerWidth / 2;
+            mouseY = event.clientY - window.innerHeight / 2;
+        });
+
+
+        function animate() {
+            animationId = requestAnimationFrame(animate);
+
+
+            particles.rotation.y += 0.001;
+            particles.rotation.x += 0.0005;
+
+
+            if (activeMesh) {
+                activeMesh.rotation.y -= 0.001;
+                activeMesh.rotation.x -= 0.0005;
+            }
+
+
+            camera.position.x += (mouseX * 0.005 - camera.position.x) * 0.05;
+            camera.position.y += (-mouseY * 0.005 - camera.position.y) * 0.05;
+            camera.lookAt(scene.position);
+
+
+            renderer.render(scene, camera);
+        }
+
+
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) {
+                cancelAnimationFrame(animationId);
+            } else {
+                animate();
+            }
+        });
+
+
+        animate();
+
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
