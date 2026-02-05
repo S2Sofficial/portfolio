@@ -1,0 +1,13 @@
+{
+  "name": "portfolio",
+  "version": "1.0.0",
+  "description": "My Another portfolio! (work in progress)",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "build:tailwind": "tailwindcss -i ./src/tailwind.css -o ./styles/tailwind.css --minify"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}

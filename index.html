@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
@@ -28,7 +28,7 @@
             <rect width="64" height="64" rx="10" fill="black"/>
             <text x="32" y="42" text-anchor="middle" font-size="28" font-weight="700" fill="white" font-family="Arial, Helvetica, sans-serif">SKY</text>
         </svg>'>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./styles/tailwind.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <!-- Optimize Font Loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,27 +37,6 @@
     <!-- Updated FontAwesome to 6.5.1 CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Space Grotesk', 'sans-serif'],
-                    },
-                    colors: {
-                        'accent': 'var(--accent-color)',
-                        'dark-bg': '#050505',
-                        'light-bg': '#f8fafc',
-                    },
-                    animation: {
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                    }
-                }
-            }
-        }
-    </script>
 
     <style>
         :root {
