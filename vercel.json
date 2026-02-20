@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/notifyy/(.*)",
+      "destination": "https://notifyys2s.vercel.app/$1"
+    }
+  ]
+}
